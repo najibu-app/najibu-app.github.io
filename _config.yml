@@ -1,0 +1,34 @@
+title: My GitHub Pages Blog
+description: A simple blog powered by Jekyll and GitHub Pages
+baseurl: ""
+url: "https://najibu-app.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Social media
+github_username: najibu-app
+
+# Pagination
+paginate: 5
+paginate_path: "/page:num/"
+
+# Exclude files
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor/
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /:categories/:year/:month/:day/:title/
