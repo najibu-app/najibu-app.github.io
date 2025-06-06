@@ -25,9 +25,6 @@ Najibu represents a full-featured mobile trivia platform supporting persistent l
 - **Social features** including friend systems and achievements
 - **Multiple game modes** from quick solo games to tournament-style competitions
 
-![App Screenshots Grid](/assets/img/flutter-app/home_light.png)
-_Caption: Najibu mobile app home screen showing game modes and user interface_
-
 ### Mobile App Interface Gallery
 
 <table>
