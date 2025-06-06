@@ -1144,7 +1144,7 @@ Initial API design prioritized web consumption patterns, requiring subsequent op
 **Infrastructure Achievements:**
 
 - Successfully handling 500+ concurrent users on a single VPS
-- 99.9% uptime over 6 months of operation
+- 99.9% uptime of operation, albeit we are just in closed beta
 - Sub-100ms API response times globally
 - Zero data loss incidents
 
@@ -1162,21 +1162,17 @@ Initial API design prioritized web consumption patterns, requiring subsequent op
 - 85% code coverage across all Go packages
 - Comprehensive integration tests for multiplayer scenarios
 - Load testing simulating 1000+ concurrent games
-- Automated security scanning in CI/CD pipeline
 
 **Documentation & Maintainability:**
 
 - Complete API documentation with OpenAPI/Swagger
 - Comprehensive README with setup instructions
-- Architecture decision records (ADRs) for major decisions
-- Code review process with automated quality checks
 
 **Security Implementations:**
 
 - Zero-trust architecture with service-to-service authentication
 - Comprehensive input validation and sanitization
 - Rate limiting and DDoS protection
-- Regular security audits and dependency updates
 
 ## 🎉 Conclusion
 
@@ -1186,7 +1182,6 @@ The Najibu project represents a comprehensive technical evolution from concept t
 
 - Architected and implemented a scalable, real-time multiplayer game engine
 - Deployed a complete self-hosted infrastructure stack with zero-trust security
-- Developed cross-platform mobile application with offline/online state synchronization
 - Integrated comprehensive monitoring, analytics, and observability systems
 
 **Professional Development:**
@@ -1196,18 +1191,10 @@ The Najibu project represents a comprehensive technical evolution from concept t
 - Database performance optimization and query analysis expertise
 - Modern authentication and authorization system implementation
 
-**Technical Legacy:**
-Najibu functions as both a technical showcase and a foundation for continued innovation. The modular architecture and comprehensive testing suite provide a robust platform for experimental technology integration and pattern validation.
-
-This project validates that thoughtful technology selection and architectural planning enable individual developers to build and operate production-ready applications capable of serving thousands of concurrent users while maintaining enterprise-grade performance and reliability standards.
-
 ## 🔗 Project Resources
 
 - **Live Application:** [https://najibu.app](https://najibu.app)
-- **Backend Repository:** [https://github.com/alfredwk/najibu-go](https://github.com/alfredwk/najibu-go)
-- **Mobile App Repository:** [https://github.com/alfredwk/najibu-flutter](https://github.com/alfredwk/najibu-flutter)
-- **Infrastructure Config:** [https://github.com/alfredwk/najibu-infrastructure](https://github.com/alfredwk/najibu-infrastructure)
-- **Technical Documentation:** [https://docs.najibu.app](https://docs.najibu.app)
+- **Technical Documentation:** [https://najibu-app.github.io](https://najibu-app.github.io)
 
 ## 🙏 Acknowledgments
 
@@ -1251,20 +1238,22 @@ For 100k MAUs with equivalent functionality:
 Production-grade dedicated server infrastructure:
 
 **Netcup RS 4000 G11 (Primary Production Server):**
-| Resource | Specification | Monthly Cost |
-| --------------------- | ------------------------------------ | ------------- |
-| Dedicated Server | 16GB DDR5 ECC, 8 vCPU, 512GB NVMe | €14.19 (~$16) |
-| Domain & SSL | Managed DNS + certificates | $15 |
-| Backup Storage | External backup solution | $10 |
-| **Total Self-Hosted** | | **$41/month** |
+
+| Resource              | Specification                     | Monthly Cost  |
+| --------------------- | --------------------------------- | ------------- |
+| Dedicated Server      | 16GB DDR5 ECC, 8 vCPU, 512GB NVMe | €14.19 (~$16) |
+| Domain & SSL          | Managed DNS + certificates        | $15           |
+| Backup Storage        | External backup solution          | $10           |
+| **Total Self-Hosted** |                                   | **$41/month** |
 
 **Alternative Hetzner CCX23 (Scalable Option):**
-| Resource | Specification | Monthly Cost |
-| --------------------- | ------------------------------------ | ------------- |
-| VPS Server | 16GB RAM, 4 vCPU, 160GB SSD | €27.09 (~$30) |
-| Domain & SSL | Managed DNS + certificates | $15 |
-| Backup Storage | External backup solution | $10 |
-| **Total Alternative** | | **$55/month** |
+
+| Resource              | Specification               | Monthly Cost  |
+| --------------------- | --------------------------- | ------------- |
+| VPS Server            | 16GB RAM, 4 vCPU, 160GB SSD | €27.09 (~$30) |
+| Domain & SSL          | Managed DNS + certificates  | $15           |
+| Backup Storage        | External backup solution    | $10           |
+| **Total Alternative** |                             | **$55/month** |
 
 **Hardware Specifications Advantage:**
 The Netcup RS 4000 G11 delivers enterprise-grade hardware at exceptional value:
