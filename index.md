@@ -33,8 +33,6 @@ _Caption: Najibu mobile app home screen showing game modes and user interface_
 
 ### Mobile App Interface Gallery
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
-
 ![Home Screen Light](/assets/img/flutter-app/home_light.png)
 _Clean, intuitive home screen interface with game mode selection_
 
@@ -61,8 +59,6 @@ _Comprehensive user profile with achievements, statistics, and customization opt
 
 ![Activity Tracking](/assets/img/flutter-app/activity_light.png)
 _Achievement system and user activity tracking with progress visualization_
-
-</div>
 
 ## 🤔 The Technology Decision: Why I Ditched Firebase
 
