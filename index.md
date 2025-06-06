@@ -1051,7 +1051,6 @@ func (s *GameService) CompleteGame(gameID string, results GameResults) error {
 - Tournament brackets with elimination rounds
 - Team-based competitions
 - Seasonal leaderboards with rewards
-- Custom private lobbies with invite codes
 
 **AI & Machine Learning:**
 
