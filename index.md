@@ -28,8 +28,41 @@ Najibu represents a full-featured mobile trivia platform supporting persistent l
 - **Social features** including friend systems and achievements
 - **Multiple game modes** from quick solo games to tournament-style competitions
 
-![App Screenshots Grid](/assets/images/app-screenshots-grid.png)
-_Caption: Screenshots showing different game modes, leaderboards, and social features_
+![App Screenshots Grid](/assets/img/flutter-app/home_light.png)
+_Caption: Najibu mobile app home screen showing game modes and user interface_
+
+### Mobile App Interface Gallery
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+
+![Home Screen Light](/assets/img/flutter-app/home_light.png)
+_Clean, intuitive home screen interface with game mode selection_
+
+![Home Screen Dark](/assets/img/flutter-app/home_dark_green.png)
+_Dark theme variant showcasing adaptive UI design_
+
+![Game Question Interface](/assets/img/flutter-app/question_dark_green.png)
+_Real-time multiplayer question interface with timer and progress indicators_
+
+![Game Lobby](/assets/img/flutter-app/lobby_light.png)
+_Multiplayer game lobby showing waiting players and match configuration_
+
+![Leaderboard System](/assets/img/flutter-app/leaderboard_light.png)
+_Global leaderboard with ranking system and player statistics_
+
+![Game Results](/assets/img/flutter-app/game_results_light.png)
+_Detailed game results with scoring breakdown and performance analytics_
+
+![Duel Results](/assets/img/flutter-app/duel_results_light.png)
+_Head-to-head duel results showing competitive match outcomes_
+
+![User Profile](/assets/img/flutter-app/profile_dark_red.png)
+_Comprehensive user profile with achievements, statistics, and customization options_
+
+![Activity Tracking](/assets/img/flutter-app/activity_light.png)
+_Achievement system and user activity tracking with progress visualization_
+
+</div>
 
 ## 🤔 The Technology Decision: Why I Ditched Firebase
 
@@ -294,6 +327,23 @@ var playerAnswerHistogram = prometheus.NewHistogramVec(
 - System resource utilization
 - API response times and error rates
 
+#### Grafana Dashboard Gallery
+
+![Grafana Summary Dashboard](/assets/img/grafana/grafana-summary-dashboard.png)
+_High-level system overview dashboard showing key performance indicators_
+
+![Grafana Game Analytics](/assets/img/grafana/grafana-game-analytics-dashboard.png)
+_Game-specific metrics including player engagement and match statistics_
+
+![Grafana Real-time Monitoring](/assets/img/grafana/grafana-realtime-monitoring-dashboard.png)
+_Real-time system performance monitoring with live metrics_
+
+![Grafana System Overview](/assets/img/grafana/grafana-system-overview-dashboard.png)
+_Infrastructure metrics including CPU, memory, and network utilization_
+
+![Grafana PostgreSQL Dashboard](/assets/img/grafana/grafana-postgres-dashboard.png)
+_Database performance metrics and query optimization insights_
+
 ### 5. PostgreSQL: Database Deep Dive
 
 PostgreSQL serves as the backbone with carefully designed schemas for performance:
@@ -357,7 +407,127 @@ func (s *GameService) trackGameEvent(userID, event string, properties map[string
 }
 ```
 
-## 🎮 Real-Time Multiplayer: The Technical Challenge
+#### PostHog Analytics Dashboards
+
+![PostHog User Behavior Analytics](/assets/img/posthog/posthog-1.png)
+_User behavior patterns and engagement metrics showing player journey through the app_
+
+![PostHog Game Analytics](/assets/img/posthog/posthog-2.png)
+_Game-specific analytics including session duration, feature adoption, and user retention_
+
+## �️ System Architecture Overview
+
+The Najibu platform follows a microservices architecture with clear separation of concerns, implementing zero-trust security principles and comprehensive observability patterns. The system is designed for horizontal scalability and high availability.
+
+```mermaid
+graph TB
+    %% External Services
+    subgraph "External Services"
+        DNS[DNS Provider]
+        LE[Let's Encrypt]
+        PH[PostHog Analytics]
+        EXT_BACKUP[External Backup Storage]
+    end
+
+    %% Client Applications
+    subgraph "Client Applications"
+        FLUTTER[Flutter Mobile App<br/>iOS & Android]
+        WEB[Web Landing Page<br/>React/Next.js]
+    end
+
+    %% Edge Layer
+    subgraph "Edge Layer - Caddy Reverse Proxy"
+        CADDY[Caddy Server<br/>- Auto HTTPS<br/>- Load Balancing<br/>- Compression<br/>- Static File Serving]
+    end
+
+    %% Authentication & Authorization Layer
+    subgraph "Auth Layer - Ory Stack"
+        KRATOS[Ory Kratos<br/>Identity Management<br/>- User Registration<br/>- Login/Logout<br/>- Password Reset<br/>- Profile Management]
+        OATHKEEPER[Ory Oathkeeper<br/>Auth Gateway<br/>- Zero-Trust Architecture<br/>- Session Validation<br/>- Bearer Token Auth<br/>- Request Routing]
+    end
+
+    %% Application Services
+    subgraph "Application Layer"
+        subgraph "Go Backend Services"
+            API[REST API Server<br/>Echo Framework<br/>- User Management<br/>- Leaderboards<br/>- Achievements<br/>- Game History]
+
+            GAME_HUB[Real-time Game Hub<br/>WebSocket Server<br/>- Multiplayer Coordination<br/>- Game State Management<br/>- Live Scoring<br/>- Concurrent Game Sessions]
+
+            WEBSOCKET[WebSocket Connections<br/>- Player Communication<br/>- Real-time Updates<br/>- Game Events<br/>- Answer Submissions]
+        end
+    end
+
+    %% Data Layer
+    subgraph "Data Layer"
+        POSTGRES[(PostgreSQL Database<br/>- User Profiles<br/>- Game Sessions<br/>- Leaderboards<br/>- Questions Bank<br/>- Achievements<br/>- Friend Systems)]
+
+        REDIS[(Redis Cache<br/>- Session Storage<br/>- Game State Cache<br/>- Leaderboard Cache<br/>- Rate Limiting)]
+    end
+
+    %% Monitoring & Analytics
+    subgraph "Observability Stack"
+        PROMETHEUS[Prometheus<br/>Metrics Collection<br/>- Custom Game Metrics<br/>- Performance Monitoring<br/>- Resource Usage<br/>- API Response Times]
+
+        GRAFANA[Grafana<br/>Dashboards & Alerts<br/>- Real-time Monitoring<br/>- Custom Dashboards<br/>- Alert Management<br/>- Performance Analytics]
+    end
+
+    %% External Connections
+    DNS --> CADDY
+    LE --> CADDY
+    FLUTTER --> CADDY
+    WEB --> CADDY
+
+    %% Internal Flow
+    CADDY --> OATHKEEPER
+    CADDY --> KRATOS
+    OATHKEEPER --> API
+    OATHKEEPER --> GAME_HUB
+    KRATOS <--> POSTGRES
+    API <--> POSTGRES
+    API <--> REDIS
+    GAME_HUB <--> POSTGRES
+    GAME_HUB <--> REDIS
+    GAME_HUB --> WEBSOCKET
+
+    %% Analytics & Monitoring
+    API --> PROMETHEUS
+    GAME_HUB --> PROMETHEUS
+    API --> PH
+    GAME_HUB --> PH
+    PROMETHEUS --> GRAFANA
+    POSTGRES --> EXT_BACKUP
+
+    %% Styling
+    classDef external fill:#e1f5fe
+    classDef client fill:#f3e5f5
+    classDef edge fill:#e8f5e8
+    classDef auth fill:#fff3e0
+    classDef app fill:#e3f2fd
+    classDef data fill:#fce4ec
+    classDef monitor fill:#f1f8e9
+
+    class DNS,LE,PH,EXT_BACKUP external
+    class FLUTTER,WEB client
+    class CADDY edge
+    class KRATOS,OATHKEEPER auth
+    class API,GAME_HUB,WEBSOCKET app
+    class POSTGRES,REDIS data
+    class PROMETHEUS,GRAFANA monitor
+```
+
+### Architecture Highlights
+
+**Edge Layer**: Caddy provides automatic TLS, intelligent load balancing, and serves as the single entry point for all external traffic.
+
+**Zero-Trust Authentication**: The Ory stack ensures that every request is authenticated and authorized before reaching application services.
+
+**Microservices Design**: Clear separation between REST API services and real-time WebSocket services allows for independent scaling and maintenance.
+
+**Data Layer**: PostgreSQL handles persistent data with Redis providing high-performance caching for real-time game states and session management.
+
+**Observability**: Comprehensive monitoring through Prometheus metrics collection and Grafana visualization, with user analytics via PostHog.
+
+## �🎮 Real-Time Multiplayer: The Technical Challenge
 
 The most complex aspect of Najibu is the real-time multiplayer system. Here's how I architected it for scalability and fairness:
 

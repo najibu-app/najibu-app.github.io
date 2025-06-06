@@ -1,0 +1,135 @@
+graph TB
+    %% External Services
+    subgraph "External Services"
+        DNS[DNS Provider]
+        LE[Let's Encrypt]
+        PH[PostHog Analytics]
+        EXT_BACKUP[External Backup Storage]
+    end
+
+    %% Client Applications
+    subgraph "Client Applications"
+        FLUTTER[Flutter Mobile App<br/>iOS & Android]
+        WEB[Web Landing Page<br/>React/Next.js]
+    end
+
+    %% Edge Layer
+    subgraph "Edge Layer - Caddy Reverse Proxy"
+        CADDY[Caddy Server<br/>- Auto HTTPS<br/>- Load Balancing<br/>- Compression<br/>- Static File Serving]
+    end
+
+    %% Authentication & Authorization Layer
+    subgraph "Auth Layer - Ory Stack"
+        KRATOS[Ory Kratos<br/>Identity Management<br/>- User Registration<br/>- Login/Logout<br/>- Password Reset<br/>- Profile Management]
+        OATHKEEPER[Ory Oathkeeper<br/>Auth Gateway<br/>- Zero-Trust Architecture<br/>- Session Validation<br/>- Bearer Token Auth<br/>- Request Routing]
+    end
+
+    %% Application Services
+    subgraph "Application Layer"
+        subgraph "Go Backend Services"
+            API[REST API Server<br/>Echo Framework<br/>- User Management<br/>- Leaderboards<br/>- Achievements<br/>- Game History]
+            
+            GAME_HUB[Real-time Game Hub<br/>WebSocket Server<br/>- Multiplayer Coordination<br/>- Game State Management<br/>- Live Scoring<br/>- Concurrent Game Sessions]
+            
+            WEBSOCKET[WebSocket Connections<br/>- Player Communication<br/>- Real-time Updates<br/>- Game Events<br/>- Answer Submissions]
+        end
+    end
+
+    %% Data Layer
+    subgraph "Data Layer"
+        POSTGRES[(PostgreSQL Database<br/>- User Profiles<br/>- Game Sessions<br/>- Leaderboards<br/>- Questions Bank<br/>- Achievements<br/>- Friend Systems)]
+        
+        REDIS[(Redis Cache<br/>- Session Storage<br/>- Game State Cache<br/>- Leaderboard Cache<br/>- Rate Limiting)]
+    end
+
+    %% Monitoring & Analytics
+    subgraph "Observability Stack"
+        PROMETHEUS[Prometheus<br/>Metrics Collection<br/>- Custom Game Metrics<br/>- Performance Monitoring<br/>- Resource Usage<br/>- API Response Times]
+        
+        GRAFANA[Grafana<br/>Dashboards & Alerts<br/>- Real-time Monitoring<br/>- Custom Dashboards<br/>- Alert Management<br/>- Performance Analytics]
+    end
+
+    %% Infrastructure
+    subgraph "Infrastructure - Netcup RS 4000 G11"
+        subgraph "Docker Compose"
+            DOCKER[Docker Runtime<br/>Container Orchestration<br/>- Service Discovery<br/>- Health Checks<br/>- Auto Restart<br/>- Resource Limits]
+        end
+        
+        SERVER[Dedicated Server<br/>16GB DDR5 ECC<br/>8 vCPU AMD EPYC<br/>512GB NVMe SSD<br/>2.5 Gbps Network]
+    end
+
+    %% Backup & Security
+    subgraph "Security & Backup"
+        BACKUP[Automated Backups<br/>- PostgreSQL dumps<br/>- Configuration files<br/>- User uploads<br/>- Every 6 hours]
+        
+        SSL[SSL/TLS Certificates<br/>- Auto-renewal<br/>- Let's Encrypt<br/>- HTTPS enforcement]
+    end
+
+    %% Connection flows
+    FLUTTER -.->|HTTPS/WSS| CADDY
+    WEB -.->|HTTPS| CADDY
+    DNS -.->|Domain Resolution| CADDY
+    
+    CADDY -->|Route /api/*| OATHKEEPER
+    CADDY -->|Route /auth/*| KRATOS
+    CADDY -->|Route /grafana/*| GRAFANA
+    CADDY -->|Route /*| WEB
+    
+    OATHKEEPER -->|Authenticated Requests| API
+    OATHKEEPER -->|WebSocket Upgrade| GAME_HUB
+    KRATOS -->|User Management| POSTGRES
+    
+    API -->|Read/Write| POSTGRES
+    API -->|Cache| REDIS
+    API -->|Analytics Events| PH
+    
+    GAME_HUB -->|Game State| POSTGRES
+    GAME_HUB -->|Cache| REDIS
+    GAME_HUB -.->|WebSocket Messages| WEBSOCKET
+    
+    WEBSOCKET -.->|Real-time Communication| FLUTTER
+    
+    PROMETHEUS -->|Scrape Metrics| API
+    PROMETHEUS -->|Scrape Metrics| GAME_HUB
+    PROMETHEUS -->|Scrape Metrics| POSTGRES
+    GRAFANA -->|Query Metrics| PROMETHEUS
+    
+    BACKUP -->|Backup Data| POSTGRES
+    BACKUP -->|Store Backups| EXT_BACKUP
+    
+    LE -->|SSL Certificates| CADDY
+    SSL -->|Certificate Management| CADDY
+    
+    %% All services run in Docker
+    DOCKER -.->|Manages| KRATOS
+    DOCKER -.->|Manages| OATHKEEPER
+    DOCKER -.->|Manages| API
+    DOCKER -.->|Manages| GAME_HUB
+    DOCKER -.->|Manages| POSTGRES
+    DOCKER -.->|Manages| REDIS
+    DOCKER -.->|Manages| PROMETHEUS
+    DOCKER -.->|Manages| GRAFANA
+    DOCKER -.->|Manages| CADDY
+    
+    SERVER -.->|Hosts| DOCKER
+
+    %% Styling
+    classDef client fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef edge fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef auth fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef app fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef data fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+    classDef monitor fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef infra fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef external fill:#f5f5f5,stroke:#616161,stroke-width:2px
+    classDef security fill:#fff1f0,stroke:#c62828,stroke-width:2px
+
+    class FLUTTER,WEB client
+    class CADDY edge
+    class KRATOS,OATHKEEPER auth
+    class API,GAME_HUB,WEBSOCKET app
+    class POSTGRES,REDIS data
+    class PROMETHEUS,GRAFANA monitor
+    class DOCKER,SERVER infra
+    class DNS,LE,PH,EXT_BACKUP external
+    class BACKUP,SSL security
