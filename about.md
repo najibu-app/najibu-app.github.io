@@ -33,7 +33,7 @@ After 8+ years of coding in production, I'm finally starting to write about what
 I'm always excited to connect with fellow developers and tech enthusiasts! Feel free to reach out:
 
 - LinkedIn: [linkedin.com/in/alfred-wayne-kinyua](https://linkedin.com/in/alfred-wayne-kinyua)
-- GitHub: [github.com/alfredkinyua](https://github.com/alfiepoleon)
+- GitHub: [github.com/alfiepoleon](https://github.com/alfiepoleon)
 - Email: [alfiewayne@hotmail.com](mailto:alfiewayne@hotmail.com)
 
 ## A Few Things About Me
