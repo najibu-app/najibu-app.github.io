@@ -6,46 +6,43 @@ permalink: /about/
 
 # About Me
 
-Hello! I'm a passionate developer and technology enthusiast who loves to learn, build, and share knowledge with the community.
+Hey! I'm Alfred Wayne Kinyua, a software engineer based in Kenya with over 8 years of production coding experience. I've spent most of my career building scalable systems and solving complex problems in the trenches, and I'm just starting to document and share what I've learned along the way.
 
 ## My Journey
 
-I started my programming journey with curiosity and a desire to create meaningful solutions. Over time, I've worked with various technologies and frameworks, always eager to explore new possibilities and push the boundaries of what's possible.
+C++ was my entry point into programming though I quicly shifted to Python and React, and over the past 8+ years, I've been deep in production environments - debugging midnight incidents, optimizing database queries, and architecting systems that handle real user traffic. I recently decided to start writing about my experiences, beginning with my latest project: Najibu, a self-hosted Bible quiz app with real-time multiplayer functionality.
 
 ## What I Do
 
-- **Software Development**: Building applications and solutions using modern technologies
-- **Learning**: Continuously exploring new programming languages, frameworks, and tools
-- **Sharing**: Writing about my experiences and learnings to help others in their journey
-- **Problem Solving**: Tackling complex challenges with creative and efficient solutions
+With 8+ years in production environments, I've worked across the full stack - from Go backends and PostgreSQL databases to Flutter mobile apps. My recent focus has been on self-hosted infrastructure: building with Caddy, Ory stack for auth, Grafana for monitoring, and container orchestration. I believe in owning your tech stack and understanding every layer of your system.
 
 ## Skills & Interests
 
-- Web Development (Frontend & Backend)
-- Mobile App Development
-- Open Source Contributions
-- Technical Writing
-- Software Architecture
-- DevOps and Automation
+- **Backend**: Go, Python, PostgreSQL, Redis
+- **Mobile**: Flutter, Dart
+- **Infrastructure**: Docker, Caddy, Ory stack (Kratos/Oathkeeper)
+- **Monitoring**: Grafana, Prometheus, PostHog
+- **8+ years**: Production systems, database optimization, real-time applications
 
 ## This Blog
 
-This blog serves as my digital notebook where I document my learning experiences, share tutorials, showcase projects, and reflect on various aspects of technology and development. I believe in learning in public and helping others along the way.
+After 8+ years of coding in production, I'm finally starting to write about what I've learned. This is my attempt at documenting the real challenges of building software - the late-night debugging sessions, the architecture decisions, and the lessons learned from systems running in the wild. Starting with my Najibu project and expanding from there.
 
 ## Get In Touch
 
 I'm always excited to connect with fellow developers and tech enthusiasts! Feel free to reach out:
 
-- **GitHub**: [najibu-app](https://github.com/najibu-app)
-- **Email**: Feel free to reach out through GitHub
+- LinkedIn: [linkedin.com/in/alfred-wayne-kinyua](https://linkedin.com/in/alfred-wayne-kinyua)
+- GitHub: [github.com/alfredkinyua](https://github.com/alfiepoleon)
+- Email: [alfiewayne@hotmail.com](mailto:alfiewayne@hotmail.com)
 
-## Fun Facts
+## A Few Things About Me
 
-- I love solving coding challenges and puzzles
-- Always curious about emerging technologies
-- Enjoy contributing to open source projects
-- Believe in the power of community and knowledge sharing
+- Based in Kenya, building software for 8+ years
+- Started with Python, now deep into Go and infrastructure
+- Recently decided to start writing about what I've learned
+- Enjoy the challenge of optimizing systems under real load
 
 ---
 
-Thanks for taking the time to learn more about me! I hope you find my content helpful and engaging. Happy coding! 🚀
+Thanks for stopping by! This is my first attempt at technical writing, so bear with me as I figure out how to translate 8+ years of production experience into readable content. 🇰🇪
