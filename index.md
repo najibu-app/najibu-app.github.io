@@ -2,7 +2,7 @@
 layout: default
 title: "Building Najibu: A Self-Hosted Bible Quiz App with Real-Time Multiplayer"
 description: "A comprehensive technical showcase of building a full-stack, self-hosted Bible trivia platform with real-time multiplayer gameplay, complete DevOps pipeline, and scalable architecture."
-author: Alfred Wayne Kinyua
+author: Alfred
 featured_image: /assets/images/najibu-hero.png
 ---
 
@@ -10,7 +10,7 @@ featured_image: /assets/images/najibu-hero.png
 
 ## Who I Am
 
-I'm Alfred Wayne Kinyua, a Software Engineer specializing in scalable application development and DevOps engineering. You can connect with me on [LinkedIn](https://www.linkedin.com/in/alfred-wayne-kinyua/) where I document my technical journey. As the sole architect and developer of **Najibu**, I designed and implemented this comprehensive Bible trivia platform from ground zero.
+I'm Alfred, a Software Engineer specializing in scalable application development and DevOps engineering. You can connect with me on [LinkedIn](https://www.linkedin.com/in/alfred-wayne-kinyua/) where I document my technical journey. As the sole architect and developer of **Najibu**, I designed and implemented this comprehensive Bible trivia platform from ground zero.
 
 ## 🎯 The Project: Najibu Bible Quiz App
 
@@ -149,19 +149,19 @@ Caddy serves as my edge layer, handling:
 }
 
 api.najibu.app {
-    reverse_proxy oathkeeper:4455
+    reverse_proxy backend:8080
 }
 
 auth.najibu.app {
-    reverse_proxy kratos:4433
+    reverse_proxy auth-service:4433
 }
 
 najibu.app {
-    reverse_proxy najibu-landing:3000
+    reverse_proxy landing-page:3000
 }
 
 grafana.najibu.app {
-    reverse_proxy grafana:3000
+    reverse_proxy monitoring:3000
 }
 ```
 
@@ -183,9 +183,9 @@ The Ory ecosystem was selected for identity and access management, providing ent
 Handles user registration, login, password resets, and profile management:
 
 ```yaml
-# kratos.yml
+# Authentication service configuration
 version: v0.11.1
-dsn: postgres://kratos:password@postgres:5432/kratos
+dsn: postgres://auth_user:password@postgres:5432/auth_db
 serve:
   public:
     base_url: https://auth.najibu.app
@@ -210,10 +210,10 @@ selfservice:
 Oathkeeper functions as the primary authentication and authorization gateway, implementing zero-trust architecture between the edge proxy and backend services:
 
 ```yaml
-# oathkeeper-rules.yml
+# Authorization gateway configuration
 - id: "api-protected"
   match:
-    url: "https://api.najibu.app/api/v1/<{user,games,leaderboards,achievements,friends}/**>"
+    url: "https://api.najibu.app/api/v1/<protected-endpoints>/**"
     methods:
       - "GET"
       - "POST"
@@ -230,20 +230,16 @@ Oathkeeper functions as the primary authentication and authorization gateway, im
     - handler: "id_token"
   upstream:
     preserve_host: true
-    url: "http://najibu-go:8080"
+    url: "http://backend-service:8080"
 
 - id: "api-public"
   upstream:
     preserve_host: true
-    url: "http://najibu-go:8080"
+    url: "http://backend-service:8080"
   match:
     url: "https://api.najibu.app/api/v1/health"
     methods:
       - "GET"
-      - "POST"
-      - "PUT"
-      - "DELETE"
-      - "PATCH"
   authenticators:
     - handler: "anonymous"
   authorizer:
@@ -257,6 +253,20 @@ Oathkeeper functions as the primary authentication and authorization gateway, im
 The heart of Najibu is a Go-based API server using the Echo framework. Here's a glimpse of the real-time game management:
 
 ```go
+// Example of game state management
+type GameMessage struct {
+    Type string      `json:"type"`
+    Data interface{} `json:"data"`
+}
+
+type QuestionMessage struct {
+    QuestionIndex   int      `json:"question_index"`
+    Question        string   `json:"question"`
+    Options         []string `json:"options"`
+    TimeLimit       int      `json:"time_limit"`
+    BibleReference  string   `json:"bible_reference"`
+}
+
 func (h *GameHub) RunGame(ctx context.Context, gameID string) error {
     game := h.games[gameID]
 
@@ -284,19 +294,6 @@ func (h *GameHub) RunGame(ctx context.Context, gameID string) error {
     }
 
     return h.endGame(gameID)
-}
-
-type GameMessage struct {
-    Type string      `json:"type"`
-    Data interface{} `json:"data"`
-}
-
-type QuestionMessage struct {
-    QuestionIndex   int      `json:"question_index"`
-    Question        string   `json:"question"`
-    Options         []string `json:"options"`
-    TimeLimit       int      `json:"time_limit"`
-    BibleReference  string   `json:"bible_reference"`
 }
 ```
 
@@ -623,92 +620,54 @@ The entire application runs on Docker Compose, making it incredibly portable and
 version: "3.8"
 
 services:
-  najibu-go:
-    build: ./najibu-go
+  backend:
+    build: ./backend
     environment:
-      - DATABASE_URL=postgres://najibu:password@postgres:5432/najibu
-      - KRATOS_PUBLIC_URL=http://kratos:4433
-      - KRATOS_ADMIN_URL=http://kratos:4434
-      - POSTHOG_API_KEY=${POSTHOG_API_KEY}
+      - DATABASE_URL=postgres://app_user:password@postgres:5432/app_db
+      - AUTH_SERVICE_URL=http://auth-service:4433
+      - ANALYTICS_API_KEY=${ANALYTICS_API_KEY}
     depends_on:
       - postgres
-      - kratos
+      - auth-service
     volumes:
       - ./uploads:/app/uploads
     networks:
-      - najibu-network
+      - app-network
 
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: najibu
-      POSTGRES_USER: najibu
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - najibu-network
+      - app-network
 
-  kratos:
-    image: oryd/kratos:v1.0.0
+  auth-service:
+    image: identity-service:latest
     environment:
-      - DSN=postgres://kratos:password@postgres:5432/kratos
+      - DSN=postgres://auth_user:password@postgres:5432/auth_db
     volumes:
-      - ./kratos:/etc/config/kratos
+      - ./auth-config:/etc/config/auth
     depends_on:
       - postgres
     networks:
-      - najibu-network
+      - app-network
 
-  oathkeeper:
-    image: oryd/oathkeeper:v0.40.6
-    environment:
-      - LOG_LEVEL=debug
-    volumes:
-      - ./oathkeeper:/etc/config/oathkeeper
-    depends_on:
-      - kratos
-    networks:
-      - najibu-network
-
-  caddy:
-    image: caddy:2-alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - najibu-network
-
-  grafana:
-    image: grafana/grafana:latest
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ./grafana/datasources:/etc/grafana/provisioning/datasources
-    networks:
-      - najibu-network
-
-  najibu-landing:
-    build: ./najibu-landing
-    networks:
-      - najibu-network
+  # ...additional services...
 
 networks:
-  najibu-network:
+  app-network:
     driver: bridge
 
 volumes:
   postgres_data:
-  grafana_data:
-  caddy_data:
-  caddy_config:
+  monitoring_data:
+  reverse_proxy_data:
+  reverse_proxy_config:
 ```
 
 ### Production Deployment Considerations
@@ -742,12 +701,14 @@ volumes:
 Connection pooling is critical for handling concurrent game sessions:
 
 ```go
+// Database connection pooling configuration
 func NewDBPool(databaseURL string) (*pgxpool.Pool, error) {
     config, err := pgxpool.ParseConfig(databaseURL)
     if err != nil {
         return nil, err
     }
 
+    // Production-optimized settings
     config.MaxConns = 50
     config.MinConns = 10
     config.MaxConnLifetime = time.Hour
